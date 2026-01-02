@@ -1,6 +1,3 @@
-#!/usr/bin/env sh
-. "$(dirname -- "$0")/_/husky.sh"
-
 # Rodar o phpstan
 ./vendor/bin/phpstan
 if [ $? -ne 0 ]; then
