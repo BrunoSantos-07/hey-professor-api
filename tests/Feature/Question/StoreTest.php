@@ -1,6 +1,6 @@
 <?php
 
-use App\Models\User;
+use App\Models\{Question, User};
 use Laravel\Sanctum\Sanctum;
 
 use function Pest\Laravel\{assertDatabaseHas, postJson};
@@ -34,4 +34,72 @@ test('after creating a new question, I need to make sure that it creates on _dra
         'status'   => 'draft',
         'question' => 'Lorem ipsum jeremias?',
     ]);
+});
+
+describe('validation rules', function () {
+    test('question::required', function () {
+        $user = User::factory()->create();
+
+        Sanctum::actingAs($user);
+
+        postJson(route('questions.store'), [
+            'question' => '',
+        ])->assertJsonValidationErrors([
+            'question' => 'field is required.',
+        ]);
+    });
+
+    test('question::ending with question mark', function () {
+        $user = User::factory()->create();
+
+        Sanctum::actingAs($user);
+
+        postJson(route('questions.store'), [
+            'question' => 'Question without a question mark',
+        ])->assertJsonValidationErrors([
+            'question' => 'with a question mark.',
+        ]);
+    });
+
+    test('question::min:10', function () {
+        $user = User::factory()->create();
+
+        Sanctum::actingAs($user);
+
+        postJson(route('questions.store'), [
+            'question' => 'Lorem ip',
+        ])->assertJsonValidationErrors([
+            'question' => 'must be at least 10 characters.',
+        ]);
+    });
+
+    test('question::max:255', function () {
+        $user = User::factory()->create();
+
+        Sanctum::actingAs($user);
+
+        postJson(route('questions.store'), [
+            'question' => str_repeat('a', 256) . '?',
+        ])->assertJsonValidationErrors([
+            'question' => 'must be less than 255 characters.',
+        ]);
+    });
+
+    test('question::should be unique', function () {
+        $user     = User::factory()->create();
+        $question = Question::factory()->create([
+            'question' => 'Lorem ipsum jeremias?',
+            'status'   => 'draft',
+            'user_id'  => $user->id,
+        ]);
+
+        Sanctum::actingAs($user);
+
+        postJson(route('questions.store'), [
+            'question' => $question->question,
+        ])->assertJsonValidationErrors([
+            'question' => 'has already been taken.',
+        ]);
+    });
+
 });

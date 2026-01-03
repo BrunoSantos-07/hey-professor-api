@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\Question;
 
+use App\Rules\WithQuestionMark;
 use Illuminate\Foundation\Http\FormRequest;
 
 /**
@@ -25,7 +26,18 @@ class StoreRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'question' => ['required', new WithQuestionMark(), 'string', 'max:255', 'min:10', 'unique:questions'],
+        ];
+    }
+
+    public function messages(): array
+    {
+        return [
+            'question.required' => 'The question field is required.',
+            'question.string'   => 'The question field must be a string.',
+            'question.max'      => 'The question field must be less than 255 characters.',
+            'question.min'      => 'The question field must be at least 10 characters.',
+            'question.unique'   => 'The question has already been taken.',
         ];
     }
 }
