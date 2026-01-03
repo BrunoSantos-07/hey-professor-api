@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Question;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Question\StoreRequest;
+use App\Http\Resources\QuestionResource;
 use App\Models\Question;
 
 class StoreController extends Controller
@@ -13,12 +14,12 @@ class StoreController extends Controller
      */
     public function __invoke(StoreRequest $request)
     {
-        Question::create([
+        $question = Question::create([
             'user_id'  => auth()->id(),
             'status'   => 'draft',
             'question' => $request->question,
         ]);
 
-        return response()->noContent();
+        return QuestionResource::make($question);
     }
 }
