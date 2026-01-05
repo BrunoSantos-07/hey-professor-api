@@ -11,6 +11,8 @@ class Question extends Model
     /** @use HasFactory<\Database\Factories\QuestionFactory> */
     use HasFactory;
 
+    protected $table = 'questions';
+
     /**
      * @return BelongsTo<User, $this>
      */
