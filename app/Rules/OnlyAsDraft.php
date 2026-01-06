@@ -2,11 +2,17 @@
 
 namespace App\Rules;
 
+use App\Models\Question;
 use Closure;
 use Illuminate\Contracts\Validation\ValidationRule;
 
-class WithQuestionMark implements ValidationRule
+class OnlyAsDraft implements ValidationRule
 {
+    public function __construct(private readonly Question $question)
+    {
+
+    }
+
     /**
      * Run the validation rule.
      *
@@ -14,8 +20,8 @@ class WithQuestionMark implements ValidationRule
      */
     public function validate(string $attribute, mixed $value, Closure $fail): void
     {
-        if (!str_ends_with($value, '?')) {
-            $fail('The :attribute must end with a question mark.', null);
+        if ($this->question->status !== 'draft') {
+            $fail('The question should be a draft to be able to edit.', null);
         }
     }
 }

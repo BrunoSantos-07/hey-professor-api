@@ -17,7 +17,8 @@ class QuestionFactory extends Factory
     public function definition(): array
     {
         return [
-            //
+            'question' => fake()->sentence() . '?',
+            'status'   => 'draft',
         ];
     }
 }
