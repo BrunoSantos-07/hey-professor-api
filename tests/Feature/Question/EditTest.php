@@ -128,7 +128,7 @@ describe('security', function () {
 
 test('should return a status 200 with the updated question', function () {
     $user     = User::factory()->create();
-    $question = Question::factory()->create(['user_id' => $user->id]);
+    $question = Question::factory()->for($user)->create();
 
     Sanctum::actingAs($user);
 
