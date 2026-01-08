@@ -1,7 +1,10 @@
 <?php
 
+use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Question;
 use Illuminate\Support\Facades\Route;
+
+Route::post('register', RegisterController::class)->name('register');
 
 Route::middleware('auth:sanctum')->group(function () {
     // region questions
