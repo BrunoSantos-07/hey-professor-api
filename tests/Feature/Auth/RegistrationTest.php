@@ -8,9 +8,10 @@ use function PHPUnit\Framework\assertTrue;
 
 it('should be able to register in the application', function () {
     postJson(route('register'), [
-        'name'     => 'John Doe',
-        'email'    => 'joe@doe.com',
-        'password' => 'password',
+        'name'               => 'John Doe',
+        'email'              => 'joe@doe.com',
+        'email_confirmation' => 'joe@doe.com',
+        'password'           => 'password',
     ])->assertSessionHasNoErrors();
 
     assertDatabaseHas('users', [
@@ -57,6 +58,9 @@ describe('validations', function () {
     ]);
 
     test('email', function ($ruleKey, $value, $meta = []) {
+        if ($ruleKey == 'validation.unique') {
+            User::factory()->create(['email' => 'joe@doe.com']);
+        }
 
         postJson(route('register'), ['email' => $value])
         ->assertJsonValidationErrors([
@@ -66,11 +70,14 @@ describe('validations', function () {
                 array_merge(['attribute' => 'email'], $meta)
             ),
         ]);
+
     })
     ->with([
-        'required' => ['validation.required', ''],
-        'max:255'  => ['validation.max.string', str_repeat('*', 256), ['max' => 255]],
-        'email'    => ['validation.email', 'not-email'],
+        'required'  => ['validation.required', ''],
+        'max:255'   => ['validation.max.string', str_repeat('*', 256), ['max' => 255]],
+        'email'     => ['validation.email', 'not-email'],
+        'unique'    => ['validation.unique', 'joe@doe.com'],
+        'confirmed' => ['validation.confirmed', 'joe@doe.com'],
     ]);
 
     test('password', function ($ruleKey, $value, $meta = []) {
