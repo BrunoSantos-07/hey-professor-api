@@ -4,7 +4,7 @@ use App\Models\{Question, User};
 
 use function Pest\Laravel\{actingAs, getJson};
 
-it('', function () {
+it('shoulde be able to list only published questions', function () {
     $published = Question::factory()->published()->create();
     $draft     = Question::factory()->draft()->create();
     $user      = User::factory()->create();
