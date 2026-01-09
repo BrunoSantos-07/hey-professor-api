@@ -3,7 +3,7 @@
 use App\Models\{Question, User};
 use Laravel\Sanctum\Sanctum;
 
-use function Pest\Laravel\getJson;
+use function Pest\Laravel\{actingAs, getJson};
 
 it('should list only questions that the logged user has been created :: published', function () {
     $user              = User::factory()->create();
@@ -93,3 +93,16 @@ it('should list only questions that the logged user has been created :: archived
         'question' => $anotherUserQuestion->question,
     ]);
 });
+
+test('making sure that only draft, published, and archived statuses can be passed to the route', function ($status, $code) {
+    $user = User::factory()->create();
+    actingAs($user);
+
+    getJson(route('my-questions', ['status' => $status]))
+        ->assertStatus($code);
+})->with([
+    'draft'     => ['draft', 200],
+    'published' => ['published', 200],
+    'archived'  => ['archived', 200],
+    'anything'  => ['anything', 422],
+]);
