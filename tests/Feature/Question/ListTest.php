@@ -15,7 +15,6 @@ it('shoulde be able to list only published questions', function () {
         ->assertOk();
 
     $request->assertJsonFragment([
-
         'id'         => $published->id,
         'question'   => $published->question,
         'status'     => $published->status,

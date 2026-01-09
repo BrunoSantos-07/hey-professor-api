@@ -9,6 +9,7 @@ Route::post('register', RegisterController::class)->name('register');
 
 Route::middleware('auth:sanctum')->group(function () {
     // region questions
+    Route::get('my-questions/{status}', Question\MineController::class)->name('my-questions');
     Route::get('questions', Question\IndexController::class)->name('questions.index');
     Route::post('/questions', Question\StoreController::class)->name('questions.store');
     Route::put('/questions/{question}', Question\UpdateController::class)->name('questions.update');
