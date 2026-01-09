@@ -1,6 +1,7 @@
 <?php
 
 use App\Models\{Question, User};
+use Laravel\Sanctum\Sanctum;
 
 use function Pest\Laravel\{actingAs, getJson};
 
@@ -30,4 +31,21 @@ it('shoulde be able to list only published questions', function () {
         'id'       => $draft->id,
         'question' => $draft->question,
     ]);
+});
+
+it('should be able to search for a question', function () {
+    Sanctum::actingAs(User::factory()->create());
+
+    Question::factory()->published()->create(['question' => 'First Question?']);
+    Question::factory()->published()->create(['question' => 'Second Question?']);
+
+    getJson(route('questions.index', ['q' => 'first']))
+        ->assertOk()
+        ->assertJsonMissing(['question' => 'Second Question?'])
+        ->assertJsonFragment(['question' => 'First Question?']);
+
+    getJson(route('questions.index', ['q' => 'secon']))
+    ->assertOk()
+    ->assertJsonFragment(['question' => 'Second Question?'])
+    ->assertJsonMissing(['question' => 'First Question?']);
 });
