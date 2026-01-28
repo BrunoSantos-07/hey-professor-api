@@ -32,7 +32,7 @@ describe('validation rules', function () {
         putJson(route('questions.update', $question), [
             'question' => '',
         ])->assertJsonValidationErrors([
-            'question' => 'required.',
+            'question' => __('validation.required', ['attribute' => __('validation.attributes.question')]),
         ]);
     });
 
@@ -45,7 +45,7 @@ describe('validation rules', function () {
         putJson(route('questions.update', $question), [
             'question' => 'Question without a question mark',
         ])->assertJsonValidationErrors([
-            'question' => 'with a question mark.',
+            'question' => __('validation.with_question_mark', ['attribute' => __('validation.attributes.question')]),
         ]);
     });
 
@@ -58,7 +58,7 @@ describe('validation rules', function () {
         putJson(route('questions.update', $question), [
             'question' => 'Lorem ip',
         ])->assertJsonValidationErrors([
-            'question' => 'must be at least 10 characters.',
+            'question' => __('validation.min.string', ['attribute' => __('validation.attributes.question'), 'min' => 10]),
         ]);
     });
 
@@ -71,7 +71,7 @@ describe('validation rules', function () {
         putJson(route('questions.update', $question), [
             'question' => str_repeat('a', 256) . '?',
         ])->assertJsonValidationErrors([
-            'question' => 'must not be greater than 255 characters.',
+            'question' => __('validation.max.string', ['attribute' => __('validation.attributes.question'), 'max' => 255]),
         ]);
     });
 

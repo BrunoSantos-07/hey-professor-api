@@ -15,7 +15,7 @@ class WithQuestionMark implements ValidationRule
     public function validate(string $attribute, mixed $value, Closure $fail): void
     {
         if (!str_ends_with($value, '?')) {
-            $fail('The :attribute must end with a question mark.', null);
+            $fail('validation.with_question_mark')->translate();
         }
     }
 }

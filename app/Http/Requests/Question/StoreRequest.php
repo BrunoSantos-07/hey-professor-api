@@ -30,14 +30,4 @@ class StoreRequest extends FormRequest
         ];
     }
 
-    public function messages(): array
-    {
-        return [
-            'question.required' => 'The question field is required.',
-            'question.string'   => 'The question field must be a string.',
-            'question.max'      => 'The question field must be less than 255 characters.',
-            'question.min'      => 'The question field must be at least 10 characters.',
-            'question.unique'   => 'The question has already been taken.',
-        ];
-    }
 }

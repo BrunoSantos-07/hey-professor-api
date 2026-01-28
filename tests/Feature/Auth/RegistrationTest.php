@@ -34,7 +34,7 @@ describe('validations', function () {
             ->assertJsonValidationErrors([
                 'name' => __(
                     $ruleKey,
-                    array_merge(['attribute' => 'name'], $meta)
+                    array_merge(['attribute' => __('validation.attributes.name')], $meta)
                 ),
             ]);
     })
@@ -52,7 +52,7 @@ describe('validations', function () {
             ->assertJsonValidationErrors([
                 'email' => __(
                     $ruleKey,
-                    array_merge(['attribute' => 'email'], $meta)
+                    array_merge(['attribute' => __('validation.attributes.email')], $meta)
                 ),
             ]);
 
@@ -69,7 +69,7 @@ describe('validations', function () {
             ->assertJsonValidationErrors([
                 'password' => __(
                     $ruleKey,
-                    array_merge(['attribute' => 'password'], $meta)
+                    array_merge(['attribute' => __('validation.attributes.password')], $meta)
                 ),
             ]);
     })

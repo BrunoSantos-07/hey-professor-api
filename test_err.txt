@@ -1,0 +1,132 @@
+
+   FAIL  Tests\Feature\Auth\RegistrationTest
+  ✓ it new use… 2.87s  
+  ✓ validation… 0.02s  
+  ✓ validation… 0.04s  
+  ⨯ validation… 0.02s  
+  ⨯ validation… 0.01s  
+  ⨯ validation… 0.01s  
+  ⨯ validation… 0.23s  
+  ✓ validation… 0.01s  
+  ✓ validation… 0.03s  
+  ───────────────────  
+   FAILED  Tests\Feature\Auth\RegistrationTest > `validations` → email with dataset "required"  AssertionFailedError   
+  Failed to find a validation error in the response for key and message: 'email' => 'O campo validation.attributes.email é obrigatório.'
+
+Response has the following JSON validation errors:
+
+{
+    "name": [
+        "O campo nome é obrigatório."
+    ],
+    "email": [
+        "O campo email é obrigatório."
+    ],
+    "password": [
+        "O campo senha é obrigatório."
+    ]
+}
+
+  at tests\Feature\Auth\RegistrationTest.php:52
+     48▕             User::factory()->create(['email' => 'joe@doe.com']);
+     49▕         }
+     50▕ 
+     51▕         postJson(route('register'), ['email' => $value])
+  ➜  52▕             ->assertJsonValidationErrors([
+     53▕                 'email' => __(
+     54▕                     $ruleKey,
+     55▕                     array_merge(['attribute' => __('validation.attributes.email')], $meta)
+     56▕                 ),
+
+  ───────────────────  
+   FAILED  Tests\Feature\Auth\RegistrationTest > `validations` → email with dataset "max:255"  AssertionFailedError   
+  Failed to find a validation error in the response for key and message: 'email' => 'O campo validation.attributes.email não pode ser superior a 255 caracteres.'
+
+Response has the following JSON validation errors:
+
+{
+    "name": [
+        "O campo nome é obrigatório."
+    ],
+    "email": [
+        "O campo email deve ser um endereço de e-mail válido.",
+        "O campo email não pode ser superior a 255 caracteres."
+    ],
+    "password": [
+        "O campo senha é obrigatório."
+    ]
+}
+
+  at tests\Feature\Auth\RegistrationTest.php:52
+     48▕             User::factory()->create(['email' => 'joe@doe.com']);
+     49▕         }
+     50▕ 
+     51▕         postJson(route('register'), ['email' => $value])
+  ➜  52▕             ->assertJsonValidationErrors([
+     53▕                 'email' => __(
+     54▕                     $ruleKey,
+     55▕                     array_merge(['attribute' => __('validation.attributes.email')], $meta)
+     56▕                 ),
+
+  ───────────────────  
+   FAILED  Tests\Feature\Auth\RegistrationTest > `validations` → email with dataset "email"  AssertionFailedError   
+  Failed to find a validation error in the response for key and message: 'email' => 'O campo validation.attributes.email deve ser um endereço de e-mail válido.'
+
+Response has the following JSON validation errors:
+
+{
+    "name": [
+        "O campo nome é obrigatório."
+    ],
+    "email": [
+        "O campo email deve ser um endereço de e-mail válido."
+    ],
+    "password": [
+        "O campo senha é obrigatório."
+    ]
+}
+
+  at tests\Feature\Auth\RegistrationTest.php:52
+     48▕             User::factory()->create(['email' => 'joe@doe.com']);
+     49▕         }
+     50▕ 
+     51▕         postJson(route('register'), ['email' => $value])
+  ➜  52▕             ->assertJsonValidationErrors([
+     53▕                 'email' => __(
+     54▕                     $ruleKey,
+     55▕                     array_merge(['attribute' => __('validation.attributes.email')], $meta)
+     56▕                 ),
+
+  ───────────────────  
+   FAILED  Tests\Feature\Auth\RegistrationTest > `validations` → email with dataset "unique"  AssertionFailedError   
+  Failed to find a validation error in the response for key and message: 'email' => 'O campo validation.attributes.email já está sendo utilizado.'
+
+Response has the following JSON validation errors:
+
+{
+    "name": [
+        "O campo nome é obrigatório."
+    ],
+    "email": [
+        "O campo email já está sendo utilizado."
+    ],
+    "password": [
+        "O campo senha é obrigatório."
+    ]
+}
+
+  at tests\Feature\Auth\RegistrationTest.php:52
+     48▕             User::factory()->create(['email' => 'joe@doe.com']);
+     49▕         }
+     50▕ 
+     51▕         postJson(route('register'), ['email' => $value])
+  ➜  52▕             ->assertJsonValidationErrors([
+     53▕                 'email' => __(
+     54▕                     $ruleKey,
+     55▕                     array_merge(['attribute' => __('validation.attributes.email')], $meta)
+     56▕                 ),
+
+
+  Tests:    4 failed, 5 passed (24 assertions)
+  Duration: 3.37s
+
