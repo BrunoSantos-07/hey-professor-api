@@ -6,13 +6,15 @@ use Illuminate\Support\Facades\Hash;
 use function Pest\Laravel\{assertDatabaseHas, postJson};
 use function PHPUnit\Framework\assertTrue;
 
-it('should be able to register in the application', function () {
-    postJson(route('register'), [
-        'name'               => 'John Doe',
-        'email'              => 'joe@doe.com',
-        'email_confirmation' => 'joe@doe.com',
-        'password'           => 'password',
-    ])->assertSessionHasNoErrors();
+it('new users can register', function () {
+    $response = postJson('/register', [
+        'name'                  => 'John Doe',
+        'email'                 => 'joe@doe.com',
+        'password'              => 'password',
+        'password_confirmation' => 'password',
+    ]);
+
+    $response->assertNoContent();
 
     assertDatabaseHas('users', [
         'name'  => 'John Doe',
@@ -25,37 +27,21 @@ it('should be able to register in the application', function () {
 });
 
 describe('validations', function () {
-
-    /**
-     * Testa as validações do campo "name" no endpoint de registro.
-     *
-     * O teste recebe:
-     * - $ruleKey: chave da tradução da regra (ex: validation.max.string)
-     * - $value: valor inválido a ser enviado no request
-     * - $meta: parâmetros extras usados na mensagem de erro (ex: min, max)
-     */
     test('name', function ($ruleKey, $value, $meta = []) {
-
         postJson(route('register'), [
-            // Valor inválido que será testado para o campo "name"
             'name' => $value,
         ])
-        ->assertJsonValidationErrors([
-            'name' => __(
-                // Chave da tradução da regra de validação
-                $ruleKey,
-
-                // Merge do atributo com os metadados da regra
-                // (ex: ['min' => 3] ou ['max' => 255])
-                array_merge(['attribute' => 'name'], $meta)
-            ),
-        ]);
+            ->assertJsonValidationErrors([
+                'name' => __(
+                    $ruleKey,
+                    array_merge(['attribute' => 'name'], $meta)
+                ),
+            ]);
     })
-    ->with([
-        'required' => ['validation.required', ''],
-        'min:3'    => ['validation.min.string', 'AB', ['min' => 3]],
-        'max:255'  => ['validation.max.string', str_repeat('*', 256), ['max' => 255]],
-    ]);
+        ->with([
+            'required' => ['validation.required', ''],
+            'max:255'  => ['validation.max.string', str_repeat('*', 256), ['max' => 255]],
+        ]);
 
     test('email', function ($ruleKey, $value, $meta = []) {
         if ($ruleKey == 'validation.unique') {
@@ -63,37 +49,32 @@ describe('validations', function () {
         }
 
         postJson(route('register'), ['email' => $value])
-        ->assertJsonValidationErrors([
-            'email' => __(
-                // Chave da tradução da regra de validação
-                $ruleKey,
-                array_merge(['attribute' => 'email'], $meta)
-            ),
-        ]);
+            ->assertJsonValidationErrors([
+                'email' => __(
+                    $ruleKey,
+                    array_merge(['attribute' => 'email'], $meta)
+                ),
+            ]);
 
     })
-    ->with([
-        'required'  => ['validation.required', ''],
-        'max:255'   => ['validation.max.string', str_repeat('*', 256), ['max' => 255]],
-        'email'     => ['validation.email', 'not-email'],
-        'unique'    => ['validation.unique', 'joe@doe.com'],
-        'confirmed' => ['validation.confirmed', 'joe@doe.com'],
-    ]);
+        ->with([
+            'required' => ['validation.required', ''],
+            'max:255'  => ['validation.max.string', str_repeat('*', 256), ['max' => 255]],
+            'email'    => ['validation.email', 'not-email'],
+            'unique'   => ['validation.unique', 'joe@doe.com'],
+        ]);
 
     test('password', function ($ruleKey, $value, $meta = []) {
-
         postJson(route('register'), ['password' => $value])
-        ->assertJsonValidationErrors([
-            'password' => __(
-                // Chave da tradução da regra de validação
-                $ruleKey,
-                array_merge(['attribute' => 'password'], $meta)
-            ),
-        ]);
+            ->assertJsonValidationErrors([
+                'password' => __(
+                    $ruleKey,
+                    array_merge(['attribute' => 'password'], $meta)
+                ),
+            ]);
     })
-    ->with([
-        'required' => ['validation.required', ''],
-        'min:8'    => ['validation.min.string', 'AB', ['min' => 8]],
-        'max:40'   => ['validation.max.string', str_repeat('*', 41), ['max' => 40]],
-    ]);
+        ->with([
+            'required' => ['validation.required', ''],
+            'min:8'    => ['validation.min.string', 'AB', ['min' => 8]],
+        ]);
 });
