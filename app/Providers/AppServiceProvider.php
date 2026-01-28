@@ -23,6 +23,9 @@ class AppServiceProvider extends ServiceProvider
     {
         Model::unguard();
 
-        ResetPassword::createUrlUsing(fn (object $notifiable, string $token) => config('app.frontend_url') . "/password-reset/$token?email={$notifiable->getEmailForPasswordReset()}");
+        ResetPassword::createUrlUsing(fn (object $notifiable, string $token) => url(route('password.reset', [
+            'token' => $token,
+            'email' => $notifiable->getEmailForPasswordReset(),
+        ], false)));
     }
 }

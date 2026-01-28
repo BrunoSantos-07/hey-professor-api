@@ -9,14 +9,24 @@ use Illuminate\Support\Facades\{Hash, Password};
 use Illuminate\Support\Str;
 use Illuminate\Validation\{Rules, ValidationException};
 
+use Illuminate\View\View;
+
 class NewPasswordController extends Controller
 {
+    /**
+     * Display the password reset view.
+     */
+    public function create(Request $request): View
+    {
+        return view('auth.reset-password', ['request' => $request]);
+    }
+
     /**
      * Handle an incoming new password request.
      *
      * @throws \Illuminate\Validation\ValidationException
      */
-    public function store(Request $request): JsonResponse
+    public function store(Request $request): JsonResponse|\Illuminate\Http\RedirectResponse|View
     {
         $request->validate([
             'token'    => ['required'],
@@ -40,11 +50,20 @@ class NewPasswordController extends Controller
         );
 
         if ($status != Password::PASSWORD_RESET) {
-            throw ValidationException::withMessages([
-                'email' => [__($status)],
-            ]);
+            if ($request->wantsJson()) {
+                throw ValidationException::withMessages([
+                    'email' => [__($status)],
+                ]);
+            }
+
+            return back()->withInput($request->only('email'))
+                ->withErrors(['email' => __($status)]);
         }
 
-        return response()->json(['status' => __($status)]);
+        if ($request->wantsJson()) {
+            return response()->json(['status' => __($status)]);
+        }
+
+        return back()->with('status', 'Ok, sua senha foi resetada com sucesso, agora você pode tentar logar no seu aplicativo com suas novas credenciais');
     }
 }

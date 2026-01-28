@@ -10,11 +10,19 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
         then: function () {
             \Illuminate\Support\Facades\Route::middleware('api')
-               ->prefix('api')
-               ->group(base_path('routes/api.php'));
+                ->prefix('api')
+                ->group(base_path('routes/api.php'));
         }
     )
     ->withMiddleware(function (Middleware $middleware): void {
+        $middleware->validateCsrfTokens(except: [
+            'register',
+            'login',
+            'forgot-password',
+            'reset-password',
+            'logout',
+        ]);
+
         $middleware->api(prepend: [
             \Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful::class,
         ]);
